@@ -1,0 +1,8 @@
+CREATE DATABASE Contreras
+
+CREATE TABLE Producto (
+    nombre VARCHAR(15) ,
+    cantidad INT,
+    precio INT,
+    idProducto INT PRIMARY KEY
+)
