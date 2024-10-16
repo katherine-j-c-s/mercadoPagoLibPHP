@@ -18,10 +18,9 @@ class Producto {
         $this->idProducto ="";
     }
 
-    public function cargar($nombre, $precio, $idProducto, $cantidad){
+    public function cargar($nombre, $precio, $cantidad){
         $this->setNombre($nombre);
         $this->setPrecio($precio);
-        $this->setIdProducto($idProducto);
         $this->setCantidad($cantidad);
     }
 
@@ -82,7 +81,7 @@ class Producto {
         $resp = false;
         $base = new BaseDatos();
         if($this->getCantidad() != null){
-            $sql="INSERT INTO producto(nombre, precio, cantidad, idProducto)  VALUES ('".$this->getNombre()."','".$this->getPrecio()."','".$this->getCantidad()."','".$this->getIdProducto()."')";
+            $sql="INSERT INTO producto(nombre, precio, cantidad)  VALUES ('".$this->getNombre()."','".$this->getPrecio()."','".$this->getCantidad()."')";
             if ($base->Iniciar()) {
                 if ($nombre = $base->Ejecutar($sql)) {
                     $this->setNombre($nombre);

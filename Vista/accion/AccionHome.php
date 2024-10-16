@@ -1,90 +1,30 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
-
-use MercadoPago\MercadoPagoConfig;
-use MercadoPago\Client\Preference\PreferenceClient;
-use Modelo\Producto;
-
-// Set your Mercado Pago access token
-MercadoPagoConfig::setAccessToken('APP_USR-7761833317985447-101016-b5cc845c75840ded45ca4068ed53067e-1141992907');
-
-// Initialize the preference client
-$client = new PreferenceClient();
-
-function agregarProducto($nombre, $precio, $cantidad, $idProducto)
+$idProducto = $_GET['idProducto'];
+$cantidad = $_GET['cantidad'];
+function agregarCarrito($idProducto, $cantidad)
 {
-    $producto = new Producto();
-    $producto->cargar($nombre, $precio, $idProducto, $cantidad);
-    $producto->insertar();
+    session_start(); // Iniciar la sesión
+
+    // Si no existe el carrito, lo inicializamos
+    if (!isset($_SESSION['carrito'])) {
+        $_SESSION['carrito'] = array(); // Carrito vacío
+        $_SESSION['contador'] = 0; // Inicializamos el contador en 0
+    }
+
+    // Actualizamos el carrito
+    if (isset($_SESSION['carrito'][$idProducto])) {
+        // Si el producto ya está en el carrito, sumamos la cantidad nueva a la existente
+        $_SESSION['carrito'][$idProducto] += $cantidad;
+    } else {
+        // Si el producto no está en el carrito, lo agregamos con la cantidad indicada
+        $_SESSION['carrito'][$idProducto] = $cantidad;
+        $_SESSION['contador']++; // Incrementamos el contador de productos distintos
+    }
 }
 
-// Create the preference
-$preference = $client->create([
-    "back_urls" => array(
-        "success" => "http://test.com/success",
-        "failure" => "http://test.com/failure",
-        "pending" => "http://test.com/pending"
-    ),
-    "items" => array(
-        array(
-            "id" => "1234",
-            "title" => "Rimel Big Shot",
-            "description" => "Dummy description",
-            "quantity" => 2,
-            "currency_id" => "BRL",
-            "unit_price" => 100
-        )
-    ),
-    "payer" => array(
-        "name" => "Test",
-        "surname" => "User",
-        "email" => "your_test_email@example.com",
-    ),
-    "operation_type" => "regular_payment",
-    "payment_methods" => array(
-        "default_payment_method_id" => "master",
-        "excluded_payment_types" => array(
-            array(
-                "id" => "visa"
-            )
-        ),
-        "excluded_payment_methods" => array(
-            array(
-                "id" => ""
-            )
-        ),
-        "installments" => 5,
-        "default_installments" => 1
-    )
-]);
-
-// // Accessing the preference ID correctly
-// echo "Preference ID: " . $preference->id;
-
-// // Create the preference client
-// $preferenceClient = new PreferenceClient();
-
-// // Create the item (The correct class and namespace must be used here)
-// $item = new Item();
-// $item->id = 1;
-// $item->title = "producto1";
-// $item->description = "descripcion";
-// $item->quantity = 1;
-// $item->unit_price = 800;
-// $item->currency_id = 'ARS';
-
-// // Create the preference and set back URLs
-// $preference = new Preference();
-// $preference->back_urls = [
-//     "success" => "pagoExitoso.html",
-//     "failure" => "pagoFallido.html",
-//     "pending" => "pagoPendiente.html"
-// ];
-// $preference->items = [$item];
-
-// Save the preference
 
 ?>
+
 
 <html lang="en">
 
@@ -152,12 +92,18 @@ $preference = $client->create([
                                 <h1 class="card-title">Rimel</h1>
                                 <p class="card-text">Producto: <strong><?php echo $preference->items[0]->title; ?></strong></p>
                                 <p class="card-text">Precio: <strong>$<?php echo number_format($preference->items[0]->unit_price, 2); ?></strong></p>
-
-                                <div class="d-flex justify-content-center my-5">
-                                    <button type="$_GET" id="3" class="btn btn-primary btn-lg" onclick="">
-                                        <i class="fas fa-shopping-cart"></i> Agregar producto
-                                    </button>
-                                </div>
+                                <form action="ejecutar.php" method="post">
+                                    <!-- Campos ocultos con los valores que deseas enviar -->
+                                    <input type="hidden" name="nombre" value="Rimel">
+                                    <input type="hidden" name="precio" value="20">
+                                    <input type="hidden" name="cantidad" value="1">
+                                    <input type="hidden" name="idProducto" value="1">
+                                    <div class="d-flex justify-content-center my-5">
+                                        <button type="submit" name="ejecutar " id="3" class="btn btn-primary btn-lg">
+                                            <i class="fas fa-shopping-cart"></i> Agregar producto
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -178,6 +124,7 @@ $preference = $client->create([
                                     <input type="hidden" name="nombre" value="Rimel">
                                     <input type="hidden" name="precio" value="20">
                                     <input type="hidden" name="cantidad" value="1">
+                                    <input type="hidden" name="idProducto" value="1">
                                     <button type="submit" name="ejecutar">Hacer clic para ejecutar PHP</button>
                                 </form>
                             </div>
@@ -195,11 +142,19 @@ $preference = $client->create([
                         <h1 class=" card-title">Sombra</h1>
                                 <p class="card-text">Producto: <strong><?php echo $preference->items[0]->title; ?></strong></p>
                                 <p class="card-text">Precio: <strong>$<?php echo number_format($preference->items[0]->unit_price, 2); ?></strong></p>
-                                <div class="d-flex justify-content-center my-5">
-                                    <button type="$_GET" id="3" class="btn btn-primary btn-lg" onclick="">
-                                        <i class="fas fa-shopping-cart"></i> Agregar producto
-                                    </button>
-                                </div>
+                                <form action="ejecutar.php" method="post">
+                                    <!-- Campos ocultos con los valores que deseas enviar -->
+                                    <input type="hidden" name="nombre" value="Rimel">
+                                    <input type="hidden" name="precio" value="20">
+                                    <input type="hidden" name="cantidad" value="1">
+                                    <input type="hidden" name="idProducto" value="1">
+                                    <div class="d-flex justify-content-center my-5">
+                                        <button type="submit" name="ejecutar" id="3" class="btn btn-primary btn-lg" onclick="agregarCarrito()">
+                                            <i class="fas fa-shopping-cart"></i> Agregar producto
+                                        </button>
+                                    </div>
+                                </form>
+
                             </div>
                         </div>
                     </div>

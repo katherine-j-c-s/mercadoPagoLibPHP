@@ -122,8 +122,8 @@ class BaseDatos extends PDO
     }
 
     /**
-     *Si se inserta en una tabla que tiene una columna autoincrement se retorna el id con el que se inserto el registro
-     *caso contrario se retorna -1
+     *Si se inserta en una tabla que tiene una columna autoincrement se retorna el id con el que 
+     *se inserto el registro caso contrario se retorna -1
      */
 
     private function EjecutarInsert($sql)
