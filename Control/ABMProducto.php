@@ -1,126 +1,73 @@
 <?php
-use function PHPSTORM_META\sql_injection_subst;
-use Modelo\conector\BaseDatos;
 
-class ABMProducto
-{
-    private $nombre;
-    private $precio;
-    private $cantidad;
-    private $idProducto;
-    private $baseDatos;
+namespace Control;
+use Modelo\Producto;
+use PDOException;
+require __DIR__ . '../../Modelo/Producto.php';
+
+class AbmProducto {
+ 
 
 
-    public function __construct()
-    {
-        $this->baseDatos = new BaseDatos();
-        $this->nombre = "";
-        $this->precio = "";
-        $this->cantidad = "";
-        $this->idProducto = "";
+    public function __construct(){
     }
 
+    //Obtener todas las Productos
+    public function obtenerTodasLasProductos() {
+        $Productos = Producto::listar();
+        return $Productos;
+    }
 
+   
+    // Obtener Producto por dni
+    public function obtenerDatosProducto($nombre) {
+        $Productos = Producto::listar("nombre = '" . $nombre . "'");
+        $salida = "";
+        if (count($Productos) > 0) {
+            $salida = $Productos[0];
+        } else {
+            $salida = null;
+        }
+        return $salida;
+    }
 
-    public function getNombre() {
-		return $this->nombre;
-	}
-
-	public function setNombre($value) {
-		$this->nombre = $value;
-	}
-
-	public function getPrecio() {
-		return $this->precio;
-	}
-
-	public function setPrecio($value) {
-		$this->precio = $value;
-	}
-
-	public function getCantidad() {
-		return $this->cantidad;
-	}
-
-	public function setCantidad($value) {
-		$this->cantidad = $value;
-	}
-
-	public function getIdProducto() {
-		return $this->idProducto;
-	}
-
-	public function setIdProducto($value) {
-		$this->idProducto = $value;
-	}
-
-	public function getBaseDatos() {
-		return $this->baseDatos;
-	}
-
-	public function setBaseDatos($value) {
-		$this->baseDatos = $value;
-	}
-
-
-    //crear un nuevo producto
-    public function crear()
-    {
-        $resp = false;
-        $base = new BaseDatos();
-        $sql = "INSERT INTO auto (nombre, cantidad) VALUES (?, ?)";
-        if ($base->Iniciar()) {
+    public function agregarNuevoProducto($nombre, $cantidad, $precio) {
+        $salida = "";
+        if (!($this->obtenerDatosProducto($nombre) !== null)) {
             try {
-                if ($base->Ejecutar($sql, [$this->getNombre(), $this->getCantidad()])) {
-                    $resp = true;
-                } else {
-                    $this->setIdProducto("producto->crear: " . $base->getError());
-                }
-            } catch (Exception $e) {
-                $this->setIdProducto("producto->crear: Error - " . $e->getMessage());
+                $objProducto = new Producto();
+                $objProducto->cargar($nombre,$precio,$cantidad);
+                $objProducto->insertar();
+                $salida = "Producto registrada con éxito.";
+            } catch (PDOException $e) {
+                $salida = "Error al registrar la Producto: " . $e->getMessage();
             }
         } else {
-            $this->setIdProducto("producto->crear: " . $base->getError());
+            $salida = "La Producto ya está registrada.";
         }
-        return $resp;
+        return $salida;
     }
 
-    //listar todos los productos
-    public function modificar()
-    {
-        $resp = false;
-        $base = new BaseDatos();
-        $sql = "UPDATE auto SET cantidad = '" . $this->getCantidad() . "' WHERE nombre='" . $this->getNombre() . "'";
-        if ($base->Iniciar()) {
-            if ($base->Ejecutar($sql)) {
-                $resp = true;
-            } else {
-                $this->setIdProducto("producto->modificar: " . $base->getError());
+    public function modificarDatosProducto($nombre, $cantidad, $precio) {
+        $salida = "";
+    
+        // Verifica si la Producto existe en la base de datos
+        $abmProducto = new AbmProducto();
+        $Producto = new Producto();
+        $Producto->cargar( $nombre, $cantidad, $precio);
+    
+        if (!($abmProducto->obtenerDatosProducto($nombre) === null)) {
+            try {
+                $Producto->modificar();
+                $salida = "Producto modificada con éxito.";
+            } catch (PDOException $e) {
+                $salida = "Error al modificar la Producto: " . $e->getMessage();
             }
         } else {
-            $this->setIdProducto("producto->modificar: " . $base->getError());
+            $salida = "La Producto no existe en la base de datos.";
         }
-        return $resp;
+    
+        return $salida;
     }
-
-    //eliminar un producto
-    public function eliminar()
-    {
-        $resp = false;
-        $base = new BaseDatos();
-        $sql = "DELETE FROM producto WHERE nombre=" . $this->getNombre();
-        if ($base->Iniciar()) {
-            if ($base->Ejecutar($sql)) {
-                $resp = true;
-            } else {
-                $this->setIdProducto("producto->eliminar: " . $base->getError());
-            }
-        } else {
-            $this->setIdProducto("producto->eliminar: " . $base->getError());
-        }
-        return $resp;
-    }
-
-
 
 }

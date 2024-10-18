@@ -1,12 +1,4 @@
-<!-- <footer >
-    <div class=" flex-column text-center ">
-        <p>© 2021 - Todos los derechos reservados</p>
-        <p>Katherine y Gabriela Contreras </p>
-    </div>
-</footer> -->
-
-
-<footer  >
+<footer>
 
   <!-- Grid container -->
 

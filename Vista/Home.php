@@ -18,15 +18,16 @@
                     <div class="col-md-6">
                         <div class="card shadow-sm">
                             <div class="card-body text-center">
-                                <img class="" style="width: 200px;" src="https://dcdn.mitiendanube.com/stores/002/607/396/products/buscar-unete-a-love-isdincontacto-argentina-isdin-fotoproteccionisdinceuticstest-protector-solar-facialtodos-los-cuidadosmarcas-fotoprotector-isdin-gel-cream-dry-touch-color-spf-50-el-primer-gel-61-6a1737f1c12984efa017125090429060-1024-1024.webp" alt="base">
-                                <h1 class="card-title">Base </h1>
+                                <img class="" style="width: 200px;" src="https://unicas.pe/media/catalog/product/cache/dca4a9fdca4eee36f7fc772ccf89ce09/m/a/maybelline-mascara-colossal-indestructible-wtpmyn.jpg" alt="base">
+                                <h1 class="card-title">Rimel </h1>
                                 <p class="card-text">Producto: <strong>Rimel Big Shot</strong></p>
-                                <p class="card-text">Descripcion: <strong>Dummy description</strong></p>
+                                <p class="card-text">Descripcion: <strong>Maybelline Mascara de Pestañas WTP</strong></p>
                                 
                                 <p class="card-text">Precio: <strong>$100</strong></p>
                                 <form action="./accion/AccionProducto.php" method="post">
                                     <!-- Campos ocultos con los valores que deseas enviar -->
                                     <input type="hidden" name="nombre" value="Rimel Big Shot">
+                                    <input type="hidden" name="descripcion" value="Dummy description">
                                     <input type="hidden" name="precio" value="100">
                                     <input type="hidden" name="cantidad" value="1">
                                     <button class="btn btn-primary btn-lg" type="submit" name="ejecutar">Agregar al carrito</button>

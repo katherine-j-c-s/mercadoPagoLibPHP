@@ -1,9 +1,20 @@
 <?php
+
 require __DIR__ . '../../../vendor/autoload.php';
 
 use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Client\Preference\PreferenceClient;
 use Modelo\Producto;
+
+include_once "../../Modelo/Producto.php";
+include_once "../../Utils/Funciones.php";
+
+$datos = darDatosSubmitted();
+
+$nombre = $datos["nombre"];
+$desc = $datos["descripcion"];
+$cantidad = (int)$datos["cantidad"];
+$precio = (int)$datos["precio"];
 
 // Set your Mercado Pago access token
 MercadoPagoConfig::setAccessToken('APP_USR-7761833317985447-101016-b5cc845c75840ded45ca4068ed53067e-1141992907');
@@ -11,34 +22,29 @@ MercadoPagoConfig::setAccessToken('APP_USR-7761833317985447-101016-b5cc845c75840
 // Initialize the preference client
 $client = new PreferenceClient();
 
-function agregarProducto($nombre, $precio, $cantidad, $idProducto)
-{
-    $producto = new Producto();
-    $producto->cargar($nombre, $precio, $idProducto, $cantidad);
-    $producto->insertar();
-}
-
 // Create the preference
+// el preference es el producto que se envia a mercado pago
 $preference = $client->create([
     "back_urls" => array(
-        "success" => "http://test.com/success",
+        "success" => "http://localhost/tp2/MercadoPago/mercadoPagoLibPHP/Vista/accion/success.php",
         "failure" => "http://test.com/failure",
         "pending" => "http://test.com/pending"
     ),
     "items" => array(
         array(
             "id" => "1234",
-            "title" => "Rimel Big Shot",
-            "description" => "Dummy description",
-            "quantity" => 1,
+            "title" => $nombre,
+            "description" => $desc,
+            "quantity" => $cantidad,
             "currency_id" => "BRL",
-            "unit_price" => 100
+            "unit_price" => $precio
         )
     ),
+    // lo que se envia al cliente como informacion
     "payer" => array(
         "name" => "Test",
         "surname" => "contreras",
-        "email" => "kathijcs@gmail.com",
+        "email" => "gcontreras8522@gmail.com",
     ),
     "operation_type" => "regular_payment",
     "payment_methods" => array(
@@ -58,32 +64,6 @@ $preference = $client->create([
     )
 ]);
 
-// // Accessing the preference ID correctly
-// echo "Preference ID: " . $preference->id;
-
-// // Create the preference client
-// $preferenceClient = new PreferenceClient();
-
-// // Create the item (The correct class and namespace must be used here)
-// $item = new Item();
-// $item->id = 1;
-// $item->title = "producto1";
-// $item->description = "descripcion";
-// $item->quantity = 1;
-// $item->unit_price = 800;
-// $item->currency_id = 'ARS';
-
-// // Create the preference and set back URLs
-// $preference = new Preference();
-// $preference->back_urls = [
-//     "success" => "pagoExitoso.html",
-//     "failure" => "pagoFallido.html",
-//     "pending" => "pagoPendiente.html"
-// ];
-// $preference->items = [$item];
-
-// Save the preference
-
 ?>
 
 <html lang="en">
@@ -96,7 +76,7 @@ $preference = $client->create([
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <script src="https://sdk.mercadopago.com/js/v2"></script>
-<?php include_once("./Estructura/navbar.php") ?>
+<?php include_once("../Estructura/navbar.php") ?>
 
 <body class=" justify-content-center bg-dark">
     <div class="d-flex ">
@@ -109,6 +89,7 @@ $preference = $client->create([
     </div> -->
 
             <script>
+                // public key 
                 const mp = new MercadoPago('APP_USR-816d265f-41d6-4824-a1c3-b009b866b5da', {
                     locale: 'es-AR'
                 });
@@ -146,7 +127,7 @@ $preference = $client->create([
 
         </main>
     </div>
-    <?php include_once("./Estructura/footer.php") ?>
+    <?php include_once("../Estructura/footer.php") ?>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
